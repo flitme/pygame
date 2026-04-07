@@ -40,7 +40,3 @@ class Tank:
                 self.angle = 270
                 self.image_rotated = pygame.transform.rotate(self.image, self.angle)
                 self.old_direction = direction
-        
-        
-
-     
