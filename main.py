@@ -1,34 +1,6 @@
 import pygame
 from tank import Tank
-# Константы для размеров поля и сетки:
-SCREEN_WIDTH, SCREEN_HEIGHT = 640, 480
-GRID_SIZE = 20
-GRID_WIDTH = SCREEN_WIDTH // GRID_SIZE
-GRID_HEIGHT = SCREEN_HEIGHT // GRID_SIZE
-
-# Направления движения:
-UP = (0, -1)
-DOWN = (0, 1)
-LEFT = (-1, 0)
-RIGHT = (1, 0)
-
-# Цвет фона - черный:
-BOARD_BACKGROUND_COLOR = (0, 0, 0)
-
-# Цвет границы ячейки
-BORDER_COLOR = (93, 216, 228)
-
-# Скорость движения танка:
-SPEED = 20
-
-# Настройка игрового окна:
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0, 32)
-
-# Заголовок окна игрового поля:
-pygame.display.set_caption('Танчики')
-
-# Настройка времени:
-clock = pygame.time.Clock()
+from settings import *
 
 def main():
     """Основная функция игры."""
@@ -47,6 +19,23 @@ def main():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 return
+
+        # Получаем состояние всех клавиш
+        keys = pygame.key.get_pressed()
+        # Определяем направление движения на основе зажатых клавиш
+        if keys[pygame.K_UP]:
+            tank.move('UP')
+        elif keys[pygame.K_DOWN]:
+            tank.move('DOWN')
+        elif keys[pygame.K_LEFT]:
+            tank.move('LEFT')
+        elif keys[pygame.K_RIGHT]:
+            tank.move('RIGHT')
+
+        screen.fill((0, 0, 0))
+        tank.draw(screen)
+
+        pygame.display.update()
 
 if __name__ == '__main__':
     main()
