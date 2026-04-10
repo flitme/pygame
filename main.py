@@ -1,6 +1,7 @@
 import pygame
 from tank import Tank
 from settings import *
+from bullet import Bullet
 
 def main():
     """Основная функция игры."""
@@ -8,10 +9,10 @@ def main():
     pygame.init()
 
     tank = Tank()
-
+    bullet_list = []
     while True:
         clock.tick(SPEED)
-
+        
         tank.draw(screen)
 
         pygame.display.update()
@@ -31,10 +32,15 @@ def main():
             tank.move('LEFT')
         elif keys[pygame.K_RIGHT]:
             tank.move('RIGHT')
+        if keys[pygame.K_SPACE]:
+            bullet_list.append(Bullet(tank.x + 15, tank.y + 15))
 
         screen.fill((0, 0, 0))
         tank.draw(screen)
-
+        for bullet in bullet_list:
+            bullet.draw(screen)
+            bullet.move()
+            print((bullet))
         pygame.display.update()
 
 if __name__ == '__main__':

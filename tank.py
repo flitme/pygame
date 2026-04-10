@@ -1,6 +1,6 @@
 # Класс танка
 import pygame 
-
+from bullet import Bullet
 class Tank:
     image = 'sprites/player.png'
     def __init__(self):
@@ -40,3 +40,5 @@ class Tank:
                 self.angle = 270
                 self.image_rotated = pygame.transform.rotate(self.image, self.angle)
                 self.old_direction = direction
+        def shot(self):
+            pass
