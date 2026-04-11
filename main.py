@@ -2,7 +2,6 @@ import pygame
 from tank import Tank
 from settings import *
 from bullet import Bullet
-from saport import *
 import time
 
 def main():
