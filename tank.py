@@ -1,6 +1,7 @@
 # Класс танка
 import pygame 
 from bullet import Bullet
+
 class Tank:
     image = 'sprites/player.png'
     def __init__(self):
