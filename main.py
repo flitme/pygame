@@ -4,10 +4,44 @@ from settings import *
 from bullet import Bullet
 import time
 
+
+def menu():
+    
+    pygame.init()
+
+    font = pygame.font.Font(None, 24)
+    # Тут крч кнопки создаём
+    button_start = pygame.Rect(380, 350, 150, 50) 
+    button_exit = pygame.Rect(380, 450, 150, 50)
+    # Тут текст для кнопок и его позиция, которая задаётся в центре самой кноки
+    text_start = font.render('Start Game', True, (0, 137, 0))
+    text_start_rect = text_start.get_rect(center=button_start.center)
+    
+    text_exit = font.render('Exit Game', True, (0, 137, 0))
+    text_exit_rect = text_exit.get_rect(center=button_exit.center)
+
+    while True:
+        clock.tick(SPEED)
+        screen.fill((0, 7, 0))
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if button_start.collidepoint(event.pos): #collidepoint чекает пересекаются ли объекты, в данном случае кнопка и курсор
+                    main()
+                elif button_exit.collidepoint(event.pos):
+                    pygame.quit()
+            elif event.type == pygame.QUIT:
+                pygame.quit()
+        pygame.draw.rect(screen, (200, 255, 0), button_start)
+        pygame.draw.rect(screen, (200, 255, 0), button_exit)
+
+        screen.blit(text_start, text_start_rect)
+        screen.blit(text_exit, text_exit_rect)
+        pygame.display.update()
+
 def main():
     """Основная функция игры."""
     # Инициализация PyGame:
-    pygame.init()
+    #pygame.init()
     start_point = 11
     start_time = time.monotonic()
     tank = Tank()
@@ -21,7 +55,6 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-                return
 
         # Получаем состояние всех клавиш
         keys = pygame.key.get_pressed()
@@ -49,4 +82,4 @@ def main():
         pygame.display.update()
 
 if __name__ == '__main__':
-    main()
+    menu()
