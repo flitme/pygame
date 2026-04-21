@@ -13,10 +13,11 @@ class Tank:
         self.image_rotated = self.image
         self.old_direction = 'UP'
         self.angle = 0
+        self.rect = self.image.get_rect()
     def draw(self, screen):
-        rect = pygame.Rect(self.x, self.y, 40, 40)
-        screen.blit(self.image_rotated, rect)
-    def move(self, direction):
+        self.rect  = pygame.Rect(self.x, self.y, 40, 40)
+        screen.blit(self.image_rotated, self.rect)
+    def move(self, direction, wall_list):
         if direction == 'UP':
             self.y -= self.speed
             if self.old_direction != direction:
