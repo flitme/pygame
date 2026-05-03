@@ -3,7 +3,7 @@ from bullet import Bullet
 from settings import *
 
 class sEnemy:
-    image = 'sprites/player.png'
+    image = 'sprites/enemy.png'
     def __init__(self, x, y):
         self.x = x
         self.y = y

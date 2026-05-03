@@ -91,9 +91,15 @@ def main():
             start_point = time.monotonic()
             for enemy in enemy_list:
                 enemy.move(random.choice(direction_list), wall_list)
+                if time.monotonic() - start_time >= 1:
+                    start_time = time.monotonic()
+                    bullet_list.append(Bullet(enemy.x + 15, enemy.y + 15, enemy.old_direction))
         else:
             for enemy in enemy_list:
                 enemy.move(enemy.direction, wall_list)
+                if time.monotonic() - start_time >= 1:
+                    start_time = time.monotonic()
+                    bullet_list.append(Bullet(enemy.x + 15, enemy.y + 15, enemy.old_direction))
 
         for enemy in enemy_list:
             if len(enemy_list) < 5 and random.random() < 0.01:
