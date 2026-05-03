@@ -13,6 +13,8 @@ class sEnemy:
         self.image_rotated = self.image
         self.old_direction = 'UP'
         self.direction = 'RIGHT'
+        self.start_time_direction = 1
+        self.start_time_bullet = 1
         self.angle = 0
         self.rect = self.image.get_rect()
     def draw(self, screen):

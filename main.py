@@ -56,8 +56,8 @@ def main():
         wall_list.append(Wall(0, i, 100000, 'sprites/wall.png'))
         wall_list.append(Wall(860, i, 100000, 'sprites/wall.png'))
 
-    wall_list.append(Wall(500, 500, 5, 'sprites/wall.png'))
-    wall_list.append(Wall(200, 500, 5, 'sprites/wall.png'))
+    wall_list.append(Wall(500, 500, 1, 'sprites/wall.png'))
+    wall_list.append(Wall(200, 500, 1, 'sprites/wall.png'))
     enemy_list = []
     enemy_list.append(sEnemy(100, 100))
     direction_list = ['UP', 'DOWN', 'LEFT', 'RIGHT']
@@ -87,22 +87,22 @@ def main():
         screen.fill((0, 0, 0))
 
         tank.draw(screen)
-        if time.monotonic() - start_point >= 2:
-            start_point = time.monotonic()
-            for enemy in enemy_list:
+        
+        for enemy in enemy_list:
+            if time.monotonic() - enemy.start_time_direction >= 2:
+                enemy.start_time_direction = time.monotonic()
                 enemy.move(random.choice(direction_list), wall_list)
-                if time.monotonic() - start_time >= 1:
-                    start_time = time.monotonic()
-                    bullet_list.append(Bullet(enemy.x + 15, enemy.y + 15, enemy.old_direction))
-        else:
-            for enemy in enemy_list:
+            else:
                 enemy.move(enemy.direction, wall_list)
-                if time.monotonic() - start_time >= 1:
-                    start_time = time.monotonic()
-                    bullet_list.append(Bullet(enemy.x + 15, enemy.y + 15, enemy.old_direction))
+            if time.monotonic() - enemy.start_time_bullet >= 5:
+                 enemy.start_time_bullet = time.monotonic()
+                 bullet_list.append(Bullet(enemy.x + 15, enemy.y + 15, enemy.old_direction))
+            if enemy.x > SCREEN_WIDTH or enemy.x < 0 or enemy.y > SCREEN_HEIGHT or enemy.y < 0:
+                enemy_list.remove(enemy)
+
 
         for enemy in enemy_list:
-            if len(enemy_list) < 5 and random.random() < 0.01:
+            if len(enemy_list) < 4 and random.random() < 0.01:
                     enemy_list.append(sEnemy(random.randint(100, 700), random.randint(60, 160)))
             enemy.draw(screen)
         
