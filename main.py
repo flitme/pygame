@@ -3,7 +3,9 @@ from tank import Tank
 from settings import *
 from bullet import Bullet
 from wall import Wall
+from enemy import sEnemy
 import time
+import random
 
 
 def menu():
@@ -48,7 +50,17 @@ def main():
     tank = Tank()
     bullet_list = []
     wall_list = []
-    wall_list.append(Wall(500, 500, 2, 'sprites/wall.png'))
+    for i in range(0, 900, 40):
+        wall_list.append(Wall(i, 0, 100000, 'sprites/wall.png'))
+        wall_list.append(Wall(i, 860, 100000, 'sprites/wall.png'))
+        wall_list.append(Wall(0, i, 100000, 'sprites/wall.png'))
+        wall_list.append(Wall(860, i, 100000, 'sprites/wall.png'))
+
+    wall_list.append(Wall(500, 500, 5, 'sprites/wall.png'))
+    wall_list.append(Wall(200, 500, 5, 'sprites/wall.png'))
+    enemy_list = []
+    enemy_list.append(sEnemy(100, 100))
+    direction_list = ['UP', 'DOWN', 'LEFT', 'RIGHT']
     while True:
         
         clock.tick(SPEED)
@@ -75,10 +87,23 @@ def main():
         screen.fill((0, 0, 0))
 
         tank.draw(screen)
+        if time.monotonic() - start_point >= 2:
+            start_point = time.monotonic()
+            for enemy in enemy_list:
+                enemy.move(random.choice(direction_list), wall_list)
+        else:
+            for enemy in enemy_list:
+                enemy.move(enemy.direction, wall_list)
+
+        for enemy in enemy_list:
+            if len(enemy_list) < 5 and random.random() < 0.01:
+                    enemy_list.append(sEnemy(random.randint(100, 700), random.randint(60, 160)))
+            enemy.draw(screen)
         
         for wall in wall_list:
             wall.draw(screen)
-            if pygame.sprite.spritecollide(wall, bullet_list, False):
+            damag = pygame.sprite.spritecollide(wall, bullet_list, False)
+            for bullet in damag:
                 wall.HP -= 1
                 bullet_list.remove(bullet)
                 if wall.HP <= 0:
@@ -94,7 +119,6 @@ def main():
 
      
 
-            
-
+        
 if __name__ == '__main__':
     menu()

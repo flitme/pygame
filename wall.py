@@ -11,4 +11,3 @@ class Wall:
     def draw(self, screen):
         self.rect = pygame.Rect(self.x, self.y, 40, 40)
         screen.blit(self.image, self.rect)
-    
