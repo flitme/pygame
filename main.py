@@ -49,6 +49,7 @@ def main():
     start_time = time.monotonic()
     tank = Tank()
     bullet_list = []
+    bullet_list_mob = []
     wall_list = []
     for i in range(0, 900, 40):
         wall_list.append(Wall(i, 0, 100000, 'sprites/wall.png'))
@@ -89,37 +90,60 @@ def main():
         tank.draw(screen)
         
         for enemy in enemy_list:
-            if time.monotonic() - enemy.start_time_direction >= 2:
+            if time.monotonic() - enemy.start_time_direction >= 4:
                 enemy.start_time_direction = time.monotonic()
                 enemy.move(random.choice(direction_list), wall_list)
             else:
                 enemy.move(enemy.direction, wall_list)
             if time.monotonic() - enemy.start_time_bullet >= 5:
                  enemy.start_time_bullet = time.monotonic()
-                 bullet_list.append(Bullet(enemy.x + 15, enemy.y + 15, enemy.old_direction))
+                 bullet_list_mob.append(Bullet(enemy.x + 15, enemy.y + 15, enemy.old_direction))
             if enemy.x > SCREEN_WIDTH or enemy.x < 0 or enemy.y > SCREEN_HEIGHT or enemy.y < 0:
                 enemy_list.remove(enemy)
-
-
-        for enemy in enemy_list:
             if len(enemy_list) < 4 and random.random() < 0.01:
                     enemy_list.append(sEnemy(random.randint(100, 700), random.randint(60, 160)))
             enemy.draw(screen)
-        
+            damag = pygame.sprite.spritecollide(enemy, bullet_list, False)
+            for bullet in damag:
+                enemy.HP -= 1
+                bullet_list.remove(bullet)
+                if enemy.HP <= 0:
+                    enemy_list.remove(enemy)
+            damag = pygame.sprite.spritecollide(tank, bullet_list_mob, False)
+            for bullet in damag:
+                tank.HP -= 1
+                bullet_list_mob.remove(bullet)
+                if tank.HP <= 0:
+                    print('Game Over')
+
         for wall in wall_list:
             wall.draw(screen)
-            damag = pygame.sprite.spritecollide(wall, bullet_list, False)
+            bl = bullet_list + bullet_list_mob
+            damag = pygame.sprite.spritecollide(wall, bl, False)
             for bullet in damag:
                 wall.HP -= 1
-                bullet_list.remove(bullet)
+                if bullet in bullet_list:
+                    bullet_list.remove(bullet)
+                else:
+                    bullet_list_mob.remove(bullet)
                 if wall.HP <= 0:
                     wall_list.remove(wall)
 
-        for bullet in bullet_list:
+        bl = bullet_list + bullet_list_mob
+        for bullet in bl:
             bullet.draw(screen)
             bullet.move()
             if bullet.x > SCREEN_WIDTH or bullet.x < 0 or bullet.y > SCREEN_HEIGHT or bullet.y < 0:
-                bullet_list.remove(bullet)
+                if bullet in bullet_list:
+                    bullet_list.remove(bullet)
+                else:
+                    bullet_list_mob.remove(bullet)
+        bl = []
+
+        
+
+  
+
         pygame.display.update()
 
 

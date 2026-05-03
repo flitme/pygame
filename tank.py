@@ -14,6 +14,7 @@ class Tank:
         self.image_rotated = self.image
         self.old_direction = 'UP'
         self.angle = 0
+        self.HP = 2
         self.rect = self.image.get_rect()
     def draw(self, screen):
         self.rect  = pygame.Rect(self.x, self.y, 40, 40)

@@ -5,7 +5,7 @@ class Bullet:
     def __init__(self, x, y, derection):
         self.x = x
         self.y = y
-        self.speed = 10
+        self.speed = 20
         self.derection = derection
         self.damage = 1
         self.rect = (self.x, self.y, 10, 10)

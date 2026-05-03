@@ -17,6 +17,7 @@ class sEnemy:
         self.start_time_bullet = 1
         self.angle = 0
         self.rect = self.image.get_rect()
+        self.HP = 2
     def draw(self, screen):
         self.rect  = pygame.Rect(self.x, self.y, 40, 40)
         screen.blit(self.image_rotated, self.rect)
