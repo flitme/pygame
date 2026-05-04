@@ -120,7 +120,7 @@ def main():
 
         tank.draw(screen)
         baza.draw(screen)
-        
+        # блок отрисовки и движения врагов, а также их стрельбы и спавна новых врагов
         for enemy in enemy_list:
             if time.monotonic() - enemy.start_time_direction >= 4:
                 enemy.start_time_direction = time.monotonic()
@@ -144,20 +144,20 @@ def main():
                     count += 1
                     if count == 1:
                         return menu_end()
-                        
-            damag = pygame.sprite.spritecollide(tank, bullet_list_mob, False)
-            for bullet in damag:
-                tank.HP -= 1
-                bullet_list_mob.remove(bullet)
-                if tank.HP <= 0:
-                    return menu_end()
-            damag = pygame.sprite.spritecollide(baza, bullet_list_mob, False)
-            for bullet in damag:
-                baza.HP -= 1
-                bullet_list_mob.remove(bullet)
-                if baza.HP <= 0:
-                    return menu_end()
-
+        
+        # блок проверки столкновений пуль врагов с танком, базой и всех пуль со стенами     
+        damag = pygame.sprite.spritecollide(tank, bullet_list_mob, False)
+        for bullet in damag:
+            tank.HP -= 1
+            bullet_list_mob.remove(bullet)
+            if tank.HP <= 0:
+                return menu_end()
+        damag = pygame.sprite.spritecollide(baza, bullet_list_mob, False)
+        for bullet in damag:
+            baza.HP -= 1
+            bullet_list_mob.remove(bullet)
+            if baza.HP <= 0:
+                return menu_end()
         for wall in wall_list:
             wall.draw(screen)
             bl = bullet_list + bullet_list_mob
@@ -171,6 +171,7 @@ def main():
                 if wall.HP <= 0:
                     wall_list.remove(wall)
 
+        # блок отрисовки и движения пуль
         bl = bullet_list + bullet_list_mob
         for bullet in bl:
             bullet.draw(screen)
