@@ -1,8 +1,9 @@
 import pygame 
 from bullet import Bullet
 from settings import *
+from tank import Tank
 
-class sEnemy:
+class sEnemy(Tank):
     image = 'sprites/enemy.png'
     def __init__(self, x, y):
         self.x = x
@@ -18,9 +19,9 @@ class sEnemy:
         self.angle = 0
         self.rect = self.image.get_rect()
         self.HP = 2
-    def draw(self, screen):
-        self.rect  = pygame.Rect(self.x, self.y, 40, 40)
-        screen.blit(self.image_rotated, self.rect)
+    # def draw(self, screen):
+    #     self.rect  = pygame.Rect(self.x, self.y, 40, 40)
+    #     screen.blit(self.image_rotated, self.rect)
     def move(self, direction, wall_list):
         self.direction = direction
         if self.direction == 'UP':

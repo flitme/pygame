@@ -2,7 +2,7 @@ import pygame
 from tank import Tank
 from settings import *
 from bullet import Bullet
-from wall import Wall
+from wall import Wall, Baza
 from enemy import sEnemy
 import time
 import random
@@ -17,10 +17,10 @@ def menu():
     button_start = pygame.Rect(380, 350, 150, 50) 
     button_exit = pygame.Rect(380, 450, 150, 50)
     # Тут текст для кнопок и его позиция, которая задаётся в центре самой кноки
-    text_start = font.render('Start Game', True, (0, 137, 0))
+    text_start = font.render('Начать игру', True, (0, 137, 0))
     text_start_rect = text_start.get_rect(center=button_start.center)
     
-    text_exit = font.render('Exit Game', True, (0, 137, 0))
+    text_exit = font.render('Выйти из игры', True, (0, 137, 0))
     text_exit_rect = text_exit.get_rect(center=button_exit.center)
 
     while True:
@@ -77,6 +77,8 @@ def main():
     bullet_list_mob = []
     wall_list = []
     count = 0
+    baza = Baza(400, 800, 10, 'sprites/baza.jpg')
+
     for i in range(0, 900, 40):
         wall_list.append(Wall(i, 0, 100000, 'sprites/wall.png'))
         wall_list.append(Wall(i, 860, 100000, 'sprites/wall.png'))
@@ -117,6 +119,7 @@ def main():
         screen.fill((0, 0, 0))
 
         tank.draw(screen)
+        baza.draw(screen)
         
         for enemy in enemy_list:
             if time.monotonic() - enemy.start_time_direction >= 4:
@@ -147,6 +150,12 @@ def main():
                 tank.HP -= 1
                 bullet_list_mob.remove(bullet)
                 if tank.HP <= 0:
+                    return menu_end()
+            damag = pygame.sprite.spritecollide(baza, bullet_list_mob, False)
+            for bullet in damag:
+                baza.HP -= 1
+                bullet_list_mob.remove(bullet)
+                if baza.HP <= 0:
                     return menu_end()
 
         for wall in wall_list:

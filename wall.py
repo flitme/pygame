@@ -11,3 +11,7 @@ class Wall:
     def draw(self, screen):
         self.rect = pygame.Rect(self.x, self.y, 40, 40)
         screen.blit(self.image, self.rect)
+
+class Baza(Wall):
+    def __init__(self, x, y, HP, image):
+        super().__init__(x, y, HP, image)
