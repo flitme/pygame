@@ -41,6 +41,31 @@ def menu():
         screen.blit(text_exit, text_exit_rect)
         pygame.display.update()
 
+def menu_end():
+    screen.fill((0, 0, 0))
+    font = pygame.font.Font(None, 24)
+    button_restart = pygame.Rect(380, 350, 150, 50)
+    text_good_end = font.render(f'Рестарт', True, (0, 0, 0))
+    text_good_end_rect = text_good_end.get_rect(center=button_restart.center)
+    pygame.draw.rect(screen, (200, 255, 0), button_restart)
+    screen.blit(text_good_end, text_good_end_rect)
+    button_menu = pygame.Rect(380, 450, 150, 50)
+    text_menu = font.render(f'Выйти в меню', True, (0, 0, 0))
+    text_menu_rect = text_menu.get_rect(center=button_menu.center)
+    pygame.draw.rect(screen, (200, 255, 0), button_menu)
+    screen.blit(text_menu, text_menu_rect)
+
+    pygame.display.update()
+    while True:
+        clock.tick(SPEED)
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if button_restart.collidepoint(event.pos):
+                    main()
+                elif button_menu.collidepoint(event.pos):
+                    menu()
+            elif event.type == pygame.QUIT:
+                pygame.quit()
 def main():
     """Основная функция игры."""
     # Инициализация PyGame:
@@ -51,6 +76,7 @@ def main():
     bullet_list = []
     bullet_list_mob = []
     wall_list = []
+    count = 0
     for i in range(0, 900, 40):
         wall_list.append(Wall(i, 0, 100000, 'sprites/wall.png'))
         wall_list.append(Wall(i, 860, 100000, 'sprites/wall.png'))
@@ -62,7 +88,10 @@ def main():
     enemy_list = []
     enemy_list.append(sEnemy(100, 100))
     direction_list = ['UP', 'DOWN', 'LEFT', 'RIGHT']
+    font = pygame.font.SysFont('Arial', 32)
+
     while True:
+
         
         clock.tick(SPEED)
         
@@ -100,7 +129,7 @@ def main():
                  bullet_list_mob.append(Bullet(enemy.x + 15, enemy.y + 15, enemy.old_direction))
             if enemy.x > SCREEN_WIDTH or enemy.x < 0 or enemy.y > SCREEN_HEIGHT or enemy.y < 0:
                 enemy_list.remove(enemy)
-            if len(enemy_list) < 4 and random.random() < 0.01:
+            if len(enemy_list) < 4 and random.random() < 0.02:
                     enemy_list.append(sEnemy(random.randint(100, 700), random.randint(60, 160)))
             enemy.draw(screen)
             damag = pygame.sprite.spritecollide(enemy, bullet_list, False)
@@ -109,12 +138,16 @@ def main():
                 bullet_list.remove(bullet)
                 if enemy.HP <= 0:
                     enemy_list.remove(enemy)
+                    count += 1
+                    if count == 1:
+                        return menu_end()
+                        
             damag = pygame.sprite.spritecollide(tank, bullet_list_mob, False)
             for bullet in damag:
                 tank.HP -= 1
                 bullet_list_mob.remove(bullet)
                 if tank.HP <= 0:
-                    print('Game Over')
+                    return menu_end()
 
         for wall in wall_list:
             wall.draw(screen)
@@ -139,16 +172,13 @@ def main():
                 else:
                     bullet_list_mob.remove(bullet)
         bl = []
-
-        
-
-  
-
+        text_count = font.render(f'Счёт: {count}', True, (0, 255, 0))
+        screen.blit(text_count, (800, 0))
         pygame.display.update()
 
 
      
 
-        
+
 if __name__ == '__main__':
     menu()
