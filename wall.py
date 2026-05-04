@@ -15,3 +15,4 @@ class Wall:
 class Baza(Wall):
     def __init__(self, x, y, HP, image):
         super().__init__(x, y, HP, image)
+        
