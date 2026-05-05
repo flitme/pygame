@@ -126,7 +126,7 @@ def main():
                 enemy.start_time_direction = time.monotonic()
                 enemy.move(random.choice(direction_list), wall_list)
             else:
-                enemy.move(enemy.direction, wall_list)
+                enemy.move(enemy.old_direction, wall_list)
             if time.monotonic() - enemy.start_time_bullet >= 5:
                  enemy.start_time_bullet = time.monotonic()
                  bullet_list_mob.append(Bullet(enemy.x + 15, enemy.y + 15, enemy.old_direction))
@@ -188,7 +188,5 @@ def main():
 
 
      
-
-
 if __name__ == '__main__':
     menu()
