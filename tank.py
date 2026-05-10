@@ -14,12 +14,13 @@ class Tank:
         self.image_rotated = self.image
         self.old_direction = 'UP'
         self.angle = 0
-        self.HP = 2
+        self.HP = 1000
         self.rect = self.image.get_rect()
     def draw(self, screen):
         self.rect  = pygame.Rect(self.x, self.y, 40, 40)
         screen.blit(self.image_rotated, self.rect)
-    def move(self, direction, wall_list):
+    def move(self, direction, wall_list, enemy_list):
+        all_list = wall_list + enemy_list
         d = {
             'UP': (0, -self.speed, 0),
             'DOWN': (0, self.speed, 180),
@@ -39,7 +40,7 @@ class Tank:
         self.x, self.y = new_x, new_y
         self.rect.topleft = (self.x, self.y)
 
-        if self.rect.collidelist(wall_list) != -1:
+        if self.rect.collidelist(all_list) != -1:
             self.x, self.y = old_x, old_y
             self.rect.topleft = (self.x, self.y)
 

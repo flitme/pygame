@@ -104,13 +104,13 @@ def main():
         keys = pygame.key.get_pressed()
         # Определяем направление движения на основе зажатых клавиш
         if keys[pygame.K_UP]:
-            tank.move('UP', wall_list)
+            tank.move('UP', wall_list, enemy_list)
         elif keys[pygame.K_DOWN]:
-            tank.move('DOWN', wall_list)
+            tank.move('DOWN', wall_list, enemy_list)
         elif keys[pygame.K_LEFT]:
-            tank.move('LEFT', wall_list)
+            tank.move('LEFT', wall_list, enemy_list)
         elif keys[pygame.K_RIGHT]:
-            tank.move('RIGHT', wall_list)
+            tank.move('RIGHT', wall_list, enemy_list)
         if keys[pygame.K_SPACE]:
             if time.monotonic() - start_time >= 1:
                 start_time = time.monotonic()
@@ -124,9 +124,13 @@ def main():
         for enemy in enemy_list:
             if time.monotonic() - enemy.start_time_direction >= 4:
                 enemy.start_time_direction = time.monotonic()
-                enemy.move(random.choice(direction_list), wall_list)
+                el = enemy_list.copy() + [tank]
+                el.remove(enemy)
+                enemy.move(random.choice(direction_list), wall_list, el)
             else:
-                enemy.move(enemy.old_direction, wall_list)
+                el = enemy_list.copy() + [tank]
+                el.remove(enemy)
+                enemy.move(enemy.old_direction, wall_list, el)
             if time.monotonic() - enemy.start_time_bullet >= 5:
                  enemy.start_time_bullet = time.monotonic()
                  bullet_list_mob.append(Bullet(enemy.x + 15, enemy.y + 15, enemy.old_direction))
