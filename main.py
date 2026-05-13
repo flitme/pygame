@@ -2,11 +2,11 @@ import pygame
 from tank import Tank
 from settings import *
 from bullet import Bullet
-from wall import Wall, Baza
+from wall import Wall
 from enemy import sEnemy
+from gen_level import generate_floor, build_room_walls, spawn_room_enemies, enter_room, move_tank_after_transition
 import time
 import random
-
 
 def menu():
     
@@ -70,31 +70,18 @@ def main():
     """Основная функция игры."""
     # Инициализация PyGame:
     #pygame.init()
-    start_point = 11
     start_time = time.monotonic()
     tank = Tank()
     bullet_list = []
     bullet_list_mob = []
-    wall_list = []
     count = 0
-    baza = Baza(400, 800, 10, 'sprites/baza.jpg')
-
-    for i in range(0, 900, 40):
-        wall_list.append(Wall(i, 0, 100000, 'sprites/wall.png'))
-        wall_list.append(Wall(i, 860, 100000, 'sprites/wall.png'))
-        wall_list.append(Wall(0, i, 100000, 'sprites/wall.png'))
-        wall_list.append(Wall(860, i, 100000, 'sprites/wall.png'))
-
-    wall_list.append(Wall(500, 500, 1, 'sprites/wall.png'))
-    wall_list.append(Wall(200, 500, 1, 'sprites/wall.png'))
-    enemy_list = []
-    enemy_list.append(sEnemy(100, 100))
+    floor_index = 1
+    rooms, current_room = generate_floor(floor_index)
+    wall_list, enemy_list = enter_room(current_room, rooms, floor_index)
     direction_list = ['UP', 'DOWN', 'LEFT', 'RIGHT']
     font = pygame.font.SysFont('Arial', 32)
 
     while True:
-
-        
         clock.tick(SPEED)
         
         for event in pygame.event.get():
@@ -116,10 +103,84 @@ def main():
                 start_time = time.monotonic()
                 bullet_list.append(Bullet(tank.x + 15, tank.y + 15, tank.old_direction))
 
+        current_room_data = rooms[current_room]
+        if not current_room_data['cleared'] and len(enemy_list) == 0:
+            current_room_data['cleared'] = True
+            wall_list = build_room_walls(current_room_data)
+
+        if current_room_data['cleared']:
+            if tank.x < 0 and 'LEFT' in current_room_data['doors']:
+                next_room = (current_room[0] - 1, current_room[1])
+                if next_room in rooms:
+                    current_room = next_room
+                    move_tank_after_transition(tank, 'LEFT')
+                    wall_list, enemy_list = enter_room(current_room, rooms, floor_index)
+                    bullet_list = []
+                    bullet_list_mob = []
+                elif current_room_data['exit']:
+                    floor_index += 1
+                    rooms, current_room = generate_floor(floor_index)
+                    tank.x = 350
+                    tank.y = 800
+                    tank.rect.topleft = (tank.x, tank.y)
+                    bullet_list = []
+                    bullet_list_mob = []
+                    wall_list, enemy_list = enter_room(current_room, rooms, floor_index)
+            elif tank.x > SCREEN_WIDTH - 40 and ('RIGHT' in current_room_data['doors'] or current_room_data['exit']):
+                next_room = (current_room[0] + 1, current_room[1])
+                if next_room in rooms:
+                    current_room = next_room
+                    move_tank_after_transition(tank, 'RIGHT')
+                    wall_list, enemy_list = enter_room(current_room, rooms, floor_index)
+                    bullet_list = []
+                    bullet_list_mob = []
+                elif current_room_data['exit']:
+                    floor_index += 1
+                    rooms, current_room = generate_floor(floor_index)
+                    tank.x = 350
+                    tank.y = 800
+                    tank.rect.topleft = (tank.x, tank.y)
+                    bullet_list = []
+                    bullet_list_mob = []
+                    wall_list, enemy_list = enter_room(current_room, rooms, floor_index)
+            elif tank.y < 0 and 'UP' in current_room_data['doors']:
+                next_room = (current_room[0], current_room[1] - 1)
+                if next_room in rooms:
+                    current_room = next_room
+                    move_tank_after_transition(tank, 'UP')
+                    wall_list, enemy_list = enter_room(current_room, rooms, floor_index)
+                    bullet_list = []
+                    bullet_list_mob = []
+                elif current_room_data['exit']:
+                    floor_index += 1
+                    rooms, current_room = generate_floor(floor_index)
+                    tank.x = 350
+                    tank.y = 800
+                    tank.rect.topleft = (tank.x, tank.y)
+                    bullet_list = []
+                    bullet_list_mob = []
+                    wall_list, enemy_list = enter_room(current_room, rooms, floor_index)
+            elif tank.y > SCREEN_HEIGHT - 40 and 'DOWN' in current_room_data['doors']:
+                next_room = (current_room[0], current_room[1] + 1)
+                if next_room in rooms:
+                    current_room = next_room
+                    move_tank_after_transition(tank, 'DOWN')
+                    wall_list, enemy_list = enter_room(current_room, rooms, floor_index)
+                    bullet_list = []
+                    bullet_list_mob = []
+                elif current_room_data['exit']:
+                    floor_index += 1
+                    rooms, current_room = generate_floor(floor_index)
+                    tank.x = 350
+                    tank.y = 800
+                    tank.rect.topleft = (tank.x, tank.y)
+                    bullet_list = []
+                    bullet_list_mob = []
+                    wall_list, enemy_list = enter_room(current_room, rooms, floor_index)
         screen.fill((0, 0, 0))
 
         tank.draw(screen)
-        baza.draw(screen)
+
         # блок отрисовки и движения врагов, а также их стрельбы и спавна новых врагов
         for enemy in enemy_list:
             if time.monotonic() - enemy.start_time_direction >= 4:
@@ -136,8 +197,6 @@ def main():
                  bullet_list_mob.append(Bullet(enemy.x + 15, enemy.y + 15, enemy.old_direction))
             if enemy.x > SCREEN_WIDTH or enemy.x < 0 or enemy.y > SCREEN_HEIGHT or enemy.y < 0:
                 enemy_list.remove(enemy)
-            if len(enemy_list) < 4 and random.random() < 0.02:
-                    enemy_list.append(sEnemy(random.randint(100, 700), random.randint(60, 160)))
             enemy.draw(screen)
             damag = pygame.sprite.spritecollide(enemy, bullet_list, False)
             for bullet in damag:
@@ -146,23 +205,15 @@ def main():
                 if enemy.HP <= 0:
                     enemy_list.remove(enemy)
                     count += 1
-                    if count == 1:
-                        return menu_end()
         
-        # блок проверки столкновений пуль врагов с танком, базой и всех пуль со стенами     
+        # блок проверки столкновений пуль врагов с танком и всех пуль со стенами     
         damag = pygame.sprite.spritecollide(tank, bullet_list_mob, False)
         for bullet in damag:
             tank.HP -= 1
             bullet_list_mob.remove(bullet)
             if tank.HP <= 0:
                 return menu_end()
-        damag = pygame.sprite.spritecollide(baza, bullet_list_mob, False)
-        for bullet in damag:
-            baza.HP -= 1
-            bullet_list_mob.remove(bullet)
-            if baza.HP <= 0:
-                return menu_end()
-        for wall in wall_list:
+        for wall in wall_list[:]:
             wall.draw(screen)
             bl = bullet_list + bullet_list_mob
             damag = pygame.sprite.spritecollide(wall, bl, False)
@@ -177,7 +228,7 @@ def main():
 
         # блок отрисовки и движения пуль
         bl = bullet_list + bullet_list_mob
-        for bullet in bl:
+        for bullet in bl[:]:
             bullet.draw(screen)
             bullet.move()
             if bullet.x > SCREEN_WIDTH or bullet.x < 0 or bullet.y > SCREEN_HEIGHT or bullet.y < 0:
@@ -185,9 +236,11 @@ def main():
                     bullet_list.remove(bullet)
                 else:
                     bullet_list_mob.remove(bullet)
-        bl = []
-        text_count = font.render(f'Счёт: {count}', True, (0, 255, 0))
-        screen.blit(text_count, (800, 0))
+
+        text_count = font.render(f'Уничтожено: {count}', True, (0, 255, 0))
+        text_floor = font.render(f'Этаж: {floor_index}', True, (0, 255, 0))
+        screen.blit(text_count, (650, 0))
+        screen.blit(text_floor, (650, 32))
         pygame.display.update()
 
 
