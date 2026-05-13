@@ -4,6 +4,7 @@ from settings import *
 from bullet import Bullet
 from wall import Wall
 from enemy import sEnemy
+from bounty import BountyEnemy
 from gen_level import generate_floor, build_room_walls, spawn_room_enemies, enter_room, move_tank_after_transition
 import time
 import random
@@ -74,13 +75,14 @@ def main():
     tank = Tank()
     bullet_list = []
     bullet_list_mob = []
+    bounty_list = []
     count = 0
     floor_index = 1
     rooms, current_room = generate_floor(floor_index)
     wall_list, enemy_list = enter_room(current_room, rooms, floor_index)
     direction_list = ['UP', 'DOWN', 'LEFT', 'RIGHT']
     font = pygame.font.SysFont('Arial', 32)
-
+    bc = 0
     while True:
         clock.tick(SPEED)
         
@@ -177,7 +179,7 @@ def main():
                     bullet_list = []
                     bullet_list_mob = []
                     wall_list, enemy_list = enter_room(current_room, rooms, floor_index)
-        screen.fill((0, 0, 0))
+        
 
         tank.draw(screen)
 
@@ -203,8 +205,17 @@ def main():
                 enemy.HP -= 1
                 bullet_list.remove(bullet)
                 if enemy.HP <= 0:
+                    bounty_list.append(BountyEnemy(enemy.x + 15, enemy.y + 15))
                     enemy_list.remove(enemy)
                     count += 1
+        for bounty in bounty_list:
+            bounty.draw(screen)
+            print(type(bounty))
+            if bounty.rect.colliderect(tank.rect):
+                bounty_list.remove(bounty)
+                tank.HP += 1
+                bc += 1
+                print(tank.HP)
         
         # блок проверки столкновений пуль врагов с танком и всех пуль со стенами     
         damag = pygame.sprite.spritecollide(tank, bullet_list_mob, False)
@@ -213,7 +224,7 @@ def main():
             bullet_list_mob.remove(bullet)
             if tank.HP <= 0:
                 return menu_end()
-        for wall in wall_list[:]:
+        for wall in wall_list:
             wall.draw(screen)
             bl = bullet_list + bullet_list_mob
             damag = pygame.sprite.spritecollide(wall, bl, False)
@@ -228,7 +239,7 @@ def main():
 
         # блок отрисовки и движения пуль
         bl = bullet_list + bullet_list_mob
-        for bullet in bl[:]:
+        for bullet in bl:
             bullet.draw(screen)
             bullet.move()
             if bullet.x > SCREEN_WIDTH or bullet.x < 0 or bullet.y > SCREEN_HEIGHT or bullet.y < 0:
@@ -239,11 +250,13 @@ def main():
 
         text_count = font.render(f'Уничтожено: {count}', True, (0, 255, 0))
         text_floor = font.render(f'Этаж: {floor_index}', True, (0, 255, 0))
+        text_bc = font.render(f'Деньги: {bc}', True, (0, 255, 0))
         screen.blit(text_count, (650, 0))
         screen.blit(text_floor, (650, 32))
+        screen.blit(text_bc, (650, 64))
         pygame.display.update()
 
-
+        screen.fill((0, 0, 0))
      
 if __name__ == '__main__':
     menu()
