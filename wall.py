@@ -8,8 +8,8 @@ class Wall:
         self.image = pygame.transform.scale(self.image, (40, 40))
         self.HP = HP
         self.rect = self.image.get_rect()
-    def draw(self, screen):
         self.rect = pygame.Rect(self.x, self.y, 40, 40)
+    def draw(self, screen):
         screen.blit(self.image, self.rect)
 
 class Baza(Wall):

@@ -13,6 +13,7 @@ class BountyEnemy():
         self.x = x 
         self.y = y
         self.rect = pygame.Rect(self.x, self.y, 10, 10)
+        self.image = pygame.image.load('sprites/coin.png').convert_alpha()
+        self.image = pygame.transform.scale(self.image, (20, 20))
     def draw(self, screen):
-        self.rect = pygame.Rect(self.x, self.y, 10, 10)
-        pygame.draw.rect(screen, (255, 0, 0), self.rect)
+        screen.blit(self.image, self.rect)

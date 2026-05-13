@@ -119,6 +119,8 @@ def main():
                     wall_list, enemy_list = enter_room(current_room, rooms, floor_index)
                     bullet_list = []
                     bullet_list_mob = []
+                    bounty_list = []
+                    print('ЭЭЭ ПРИМЕРНО')
                 elif current_room_data['exit']:
                     floor_index += 1
                     rooms, current_room = generate_floor(floor_index)
@@ -127,7 +129,9 @@ def main():
                     tank.rect.topleft = (tank.x, tank.y)
                     bullet_list = []
                     bullet_list_mob = []
+                    bounty_list = []
                     wall_list, enemy_list = enter_room(current_room, rooms, floor_index)
+                    print('ЭЭЭ ПРИМЕРНО')
             elif tank.x > SCREEN_WIDTH - 40 and ('RIGHT' in current_room_data['doors'] or current_room_data['exit']):
                 next_room = (current_room[0] + 1, current_room[1])
                 if next_room in rooms:
@@ -136,6 +140,8 @@ def main():
                     wall_list, enemy_list = enter_room(current_room, rooms, floor_index)
                     bullet_list = []
                     bullet_list_mob = []
+                    bounty_list = []
+                    print('ЭЭЭ ПРИМЕРНО')
                 elif current_room_data['exit']:
                     floor_index += 1
                     rooms, current_room = generate_floor(floor_index)
@@ -144,7 +150,9 @@ def main():
                     tank.rect.topleft = (tank.x, tank.y)
                     bullet_list = []
                     bullet_list_mob = []
+                    bounty_list = []
                     wall_list, enemy_list = enter_room(current_room, rooms, floor_index)
+                    print('ЭЭЭ ПРИМЕРНО')
             elif tank.y < 0 and 'UP' in current_room_data['doors']:
                 next_room = (current_room[0], current_room[1] - 1)
                 if next_room in rooms:
@@ -153,6 +161,8 @@ def main():
                     wall_list, enemy_list = enter_room(current_room, rooms, floor_index)
                     bullet_list = []
                     bullet_list_mob = []
+                    bounty_list = []
+                    print('ЭЭЭ ПРИМЕРНО')
                 elif current_room_data['exit']:
                     floor_index += 1
                     rooms, current_room = generate_floor(floor_index)
@@ -161,7 +171,9 @@ def main():
                     tank.rect.topleft = (tank.x, tank.y)
                     bullet_list = []
                     bullet_list_mob = []
+                    bounty_list = []
                     wall_list, enemy_list = enter_room(current_room, rooms, floor_index)
+                    print('ЭЭЭ ПРИМЕРНО')
             elif tank.y > SCREEN_HEIGHT - 40 and 'DOWN' in current_room_data['doors']:
                 next_room = (current_room[0], current_room[1] + 1)
                 if next_room in rooms:
@@ -170,6 +182,8 @@ def main():
                     wall_list, enemy_list = enter_room(current_room, rooms, floor_index)
                     bullet_list = []
                     bullet_list_mob = []
+                    bounty_list = []
+                    print('ЭЭЭ ПРИМЕРНО')
                 elif current_room_data['exit']:
                     floor_index += 1
                     rooms, current_room = generate_floor(floor_index)
@@ -178,7 +192,9 @@ def main():
                     tank.rect.topleft = (tank.x, tank.y)
                     bullet_list = []
                     bullet_list_mob = []
+                    bounty_list = []
                     wall_list, enemy_list = enter_room(current_room, rooms, floor_index)
+                    print('ЭЭЭ ПРИМЕРНО')
         
 
         tank.draw(screen)
@@ -210,12 +226,10 @@ def main():
                     count += 1
         for bounty in bounty_list:
             bounty.draw(screen)
-            print(type(bounty))
+            #print(type(bounty))
             if bounty.rect.colliderect(tank.rect):
                 bounty_list.remove(bounty)
-                tank.HP += 1
                 bc += 1
-                print(tank.HP)
         
         # блок проверки столкновений пуль врагов с танком и всех пуль со стенами     
         damag = pygame.sprite.spritecollide(tank, bullet_list_mob, False)
@@ -248,12 +262,14 @@ def main():
                 else:
                     bullet_list_mob.remove(bullet)
 
-        text_count = font.render(f'Уничтожено: {count}', True, (0, 255, 0))
+        text_count = font.render(f'Уничтожено: {count}', False, (0, 255, 0))
         text_floor = font.render(f'Этаж: {floor_index}', True, (0, 255, 0))
         text_bc = font.render(f'Деньги: {bc}', True, (0, 255, 0))
+        text_HP = font.render(f'HP: {tank.HP}', True, (0, 255, 0))
         screen.blit(text_count, (650, 0))
         screen.blit(text_floor, (650, 32))
         screen.blit(text_bc, (650, 64))
+        screen.blit(text_HP, (650, 96))
         pygame.display.update()
 
         screen.fill((0, 0, 0))
