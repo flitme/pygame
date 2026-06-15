@@ -17,7 +17,7 @@ class sEnemy(Tank):
         self.start_time_bullet = 1
         self.angle = 0
         self.rect = self.image.get_rect()
-        self.HP = 2
+        self.HP = 1
 
 class BossEnemy(Tank):
     image = 'sprites/enemy.png'
@@ -33,4 +33,4 @@ class BossEnemy(Tank):
         self.start_time_bullet = 1
         self.angle = 0
         self.rect = self.image.get_rect()
-        self.HP = 10
+        self.HP = 1

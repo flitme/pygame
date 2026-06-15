@@ -8,7 +8,7 @@ class Tank:
     def __init__(self):
         self.x = 350
         self.y = 800
-        self.speed = 7
+        self.speed = 20
         self.image = pygame.image.load(self.image).convert_alpha()
         self.image = pygame.transform.scale(self.image, (40, 40))
         self.image_rotated = self.image

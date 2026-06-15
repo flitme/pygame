@@ -2,7 +2,7 @@ import pygame
 from tank import Tank
 from settings import *
 from bullet import Bullet
-from wall import Wall
+from wall import Wall, Baza
 from enemy import sEnemy, BossEnemy
 import time
 import random
@@ -71,25 +71,43 @@ def generate_floor(floor_index):
 
 def build_room_walls(room):
     wall_list = []
+    exit_door = None
     open_doors = room['doors'] if room['cleared'] else set()
     if room['exit'] and room['cleared'] and len(open_doors) < 2:
+        d1 = list(room['doors'])[0]
         all_doors = ['UP', 'DOWN', 'LEFT', 'RIGHT']
         opds = set(open_doors)
         all_doors.remove(opds.pop())
         open_doors.add(random.choice(all_doors))
-
-
+        doors_set = list(room['doors'])
+        doors_set.remove(d1)
+        doors_list = list(doors_set)
+        exit_door = doors_list[0]
+        print("Exit door:", exit_door)
+        
     for i in range(0, SCREEN_WIDTH, 40):
         if 'UP' not in open_doors or not (DOOR_START <= i <= DOOR_END):
-            wall_list.append(Wall(i, 0, 100000, 'sprites/wall.png'))  # верхняя стена
+            wall_list.append(Wall(i, 0, 100000, 'sprites/wall.png'))
+        elif exit_door == 'UP' and (DOOR_START <= i <= DOOR_END) and room["exit"]:
+            wall_list.append(Baza(i, 0, 1, 'sprites/baza.jpg'))
+            print("Baza UP")
         if 'DOWN' not in open_doors or not (DOOR_START <= i <= DOOR_END):
             wall_list.append(Wall(i, 860, 100000, 'sprites/wall.png'))  # нижняя стена
-
+        elif exit_door == 'DOWN' and (DOOR_START <= i <= DOOR_END) and room["exit"]:
+            wall_list.append(Baza(i, 860, 1, 'sprites/baza.jpg'))
+            print("Baza DOWN")
+            
     for i in range(0, SCREEN_HEIGHT, 40):
         if 'LEFT' not in open_doors or not (DOOR_START <= i <= DOOR_END):
             wall_list.append(Wall(0, i, 100000, 'sprites/wall.png'))  # левая стена
+        elif exit_door == 'LEFT' and (DOOR_START <= i <= DOOR_END) and room["exit"]:
+            wall_list.append(Baza(0, i, 1, 'sprites/baza.jpg'))
+            print("Baza LEFT")
         if 'RIGHT' not in open_doors or not (DOOR_START <= i <= DOOR_END):
             wall_list.append(Wall(860, i, 100000, 'sprites/wall.png'))  # правая стена
+        elif exit_door == 'RIGHT' and (DOOR_START <= i <= DOOR_END) and room["exit"]:
+            wall_list.append(Baza(860, i, 1, 'sprites/baza.jpg'))
+            print("Baza RIGHT")
 
     return wall_list
 
@@ -98,7 +116,9 @@ def spawn_room_enemies(room):
     if room['exit'] == False:
         return [sEnemy(x, y) for x, y in room['enemy_positions']]
     else:
+        print(room)
         return [BossEnemy(x, y) for x, y in room['enemy_positions']]
+        
 
 
 def enter_room(room_coord, rooms, floor_index):
