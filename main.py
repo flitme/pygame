@@ -3,8 +3,8 @@ from tank import Tank
 from settings import *
 from bullet import Bullet
 from wall import Wall
-from enemy import sEnemy
-from bounty import BountyEnemy
+from enemy import sEnemy, BossEnemy
+from bounty import BountyEnemy, BountyBoss
 from gen_level import generate_floor, build_room_walls, spawn_room_enemies, enter_room, move_tank_after_transition
 import time
 import random
@@ -120,7 +120,6 @@ def main():
                     bullet_list = []
                     bullet_list_mob = []
                     bounty_list = []
-                    print('ЭЭЭ ПРИМЕРНО')
                 elif current_room_data['exit']:
                     floor_index += 1
                     rooms, current_room = generate_floor(floor_index)
@@ -131,7 +130,6 @@ def main():
                     bullet_list_mob = []
                     bounty_list = []
                     wall_list, enemy_list = enter_room(current_room, rooms, floor_index)
-                    print('ЭЭЭ ПРИМЕРНО')
             elif tank.x > SCREEN_WIDTH - 40 and ('RIGHT' in current_room_data['doors'] or current_room_data['exit']):
                 next_room = (current_room[0] + 1, current_room[1])
                 if next_room in rooms:
@@ -141,7 +139,6 @@ def main():
                     bullet_list = []
                     bullet_list_mob = []
                     bounty_list = []
-                    print('ЭЭЭ ПРИМЕРНО')
                 elif current_room_data['exit']:
                     floor_index += 1
                     rooms, current_room = generate_floor(floor_index)
@@ -152,7 +149,6 @@ def main():
                     bullet_list_mob = []
                     bounty_list = []
                     wall_list, enemy_list = enter_room(current_room, rooms, floor_index)
-                    print('ЭЭЭ ПРИМЕРНО')
             elif tank.y < 0 and 'UP' in current_room_data['doors']:
                 next_room = (current_room[0], current_room[1] - 1)
                 if next_room in rooms:
@@ -162,7 +158,6 @@ def main():
                     bullet_list = []
                     bullet_list_mob = []
                     bounty_list = []
-                    print('ЭЭЭ ПРИМЕРНО')
                 elif current_room_data['exit']:
                     floor_index += 1
                     rooms, current_room = generate_floor(floor_index)
@@ -173,7 +168,6 @@ def main():
                     bullet_list_mob = []
                     bounty_list = []
                     wall_list, enemy_list = enter_room(current_room, rooms, floor_index)
-                    print('ЭЭЭ ПРИМЕРНО')
             elif tank.y > SCREEN_HEIGHT - 40 and 'DOWN' in current_room_data['doors']:
                 next_room = (current_room[0], current_room[1] + 1)
                 if next_room in rooms:
@@ -183,7 +177,6 @@ def main():
                     bullet_list = []
                     bullet_list_mob = []
                     bounty_list = []
-                    print('ЭЭЭ ПРИМЕРНО')
                 elif current_room_data['exit']:
                     floor_index += 1
                     rooms, current_room = generate_floor(floor_index)
@@ -194,7 +187,6 @@ def main():
                     bullet_list_mob = []
                     bounty_list = []
                     wall_list, enemy_list = enter_room(current_room, rooms, floor_index)
-                    print('ЭЭЭ ПРИМЕРНО')
         
 
         tank.draw(screen)
@@ -221,7 +213,10 @@ def main():
                 enemy.HP -= 1
                 bullet_list.remove(bullet)
                 if enemy.HP <= 0:
-                    bounty_list.append(BountyEnemy(enemy.x + 15, enemy.y + 15))
+                    if isinstance(enemy, BossEnemy):
+                        bounty_list.append(BountyBoss(enemy.x + 15, enemy.y + 15))
+                    else:
+                        bounty_list.append(BountyEnemy(enemy.x + 15, enemy.y + 15))
                     enemy_list.remove(enemy)
                     count += 1
         for bounty in bounty_list:
@@ -229,7 +224,7 @@ def main():
             #print(type(bounty))
             if bounty.rect.colliderect(tank.rect):
                 bounty_list.remove(bounty)
-                bc += 1
+                bc += bounty.chip
         
         # блок проверки столкновений пуль врагов с танком и всех пуль со стенами     
         damag = pygame.sprite.spritecollide(tank, bullet_list_mob, False)

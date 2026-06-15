@@ -3,7 +3,7 @@ from tank import Tank
 from settings import *
 from bullet import Bullet
 from wall import Wall
-from enemy import sEnemy
+from enemy import sEnemy, BossEnemy
 import time
 import random
 
@@ -16,24 +16,28 @@ def create_room():
     }
 
 
-def generate_room_enemy_positions(floor_index):
-    enemy_positions = []
-    enemy_count = random.randint(1, min(3, 1 + floor_index)) 
+def generate_room_enemy_positions(floor_index, exit_room):
+    if not exit_room:
+        enemy_positions = []
+        enemy_count = random.randint(1, min(3, 1 + floor_index)) 
 
-    while len(enemy_positions) < enemy_count:
-        x = random.randint(80, 780)  
-        y = random.randint(80, 780)  
-        too_close = False
-        for px, py in enemy_positions:
-            if abs(x - px) < 60 and abs(y - py) < 60:
-                too_close = True
-                break
-        if too_close:
-            continue  
-        enemy_positions.append((x, y))  
+        while len(enemy_positions) < enemy_count:
+            x = random.randint(80, 780)  
+            y = random.randint(80, 780)  
+            too_close = False
+            for px, py in enemy_positions:
+                if abs(x - px) < 60 and abs(y - py) < 60:
+                    too_close = True
+                    break
+            if too_close:
+                continue  
+            enemy_positions.append((x, y))  
 
-    return enemy_positions  
-
+        return enemy_positions 
+    else:
+        enemy_positions = []
+        enemy_positions.append((random.randint(80, 780) , random.randint(80, 780)))  
+        return enemy_positions
 
 def generate_floor(floor_index):
     rooms = {}
@@ -61,22 +65,19 @@ def generate_floor(floor_index):
     rooms[current_room]['exit'] = True  
 
     for room in rooms.values():
-        room['enemy_positions'] = generate_room_enemy_positions(floor_index) 
-
+        room['enemy_positions'] = generate_room_enemy_positions(floor_index, room['exit'])   
     return rooms, (ROOM_GRID_WIDTH // 2, ROOM_GRID_HEIGHT // 2)
 
 
 def build_room_walls(room):
     wall_list = []
     open_doors = room['doors'] if room['cleared'] else set()
-    print(open_doors)
     if room['exit'] and room['cleared'] and len(open_doors) < 2:
         all_doors = ['UP', 'DOWN', 'LEFT', 'RIGHT']
         opds = set(open_doors)
         all_doors.remove(opds.pop())
         open_doors.add(random.choice(all_doors))
-        print(open_doors)
-        print(room)
+
 
     for i in range(0, SCREEN_WIDTH, 40):
         if 'UP' not in open_doors or not (DOOR_START <= i <= DOOR_END):
@@ -94,12 +95,16 @@ def build_room_walls(room):
 
 
 def spawn_room_enemies(room):
-    return [sEnemy(x, y) for x, y in room['enemy_positions']]
+    if room['exit'] == False:
+        return [sEnemy(x, y) for x, y in room['enemy_positions']]
+    else:
+        return [BossEnemy(x, y) for x, y in room['enemy_positions']]
 
 
 def enter_room(room_coord, rooms, floor_index):
     room = rooms[room_coord]
     wall_list = build_room_walls(room)
+    print(room)
     enemy_list = [] if room['cleared'] else spawn_room_enemies(room)
     return wall_list, enemy_list
 

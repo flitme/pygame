@@ -11,7 +11,7 @@ BOARD_BACKGROUND_COLOR = (0, 0, 0)
 BORDER_COLOR = (93, 216, 228)
 
 # Скорость игры:
-SPEED = 10
+SPEED = 20
 
 ROOM_GRID_WIDTH = 3 # ширина сетки комнат 
 ROOM_GRID_HEIGHT = 3  # высота сетки комнат 
