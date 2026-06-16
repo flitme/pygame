@@ -83,8 +83,7 @@ def build_room_walls(room):
         doors_set.remove(d1)
         doors_list = list(doors_set)
         exit_door = doors_list[0]
-        print("Exit door:", exit_door)
-        
+
     for i in range(0, SCREEN_WIDTH, 40):
         if 'UP' not in open_doors or not (DOOR_START <= i <= DOOR_END):
             wall_list.append(Wall(i, 0, 100000, 'sprites/wall.png'))

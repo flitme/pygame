@@ -8,6 +8,7 @@ from bounty import BountyEnemy, BountyBoss
 from gen_level import generate_floor, build_room_walls, spawn_room_enemies, enter_room, move_tank_after_transition
 import time
 import random
+from support_function import next_floor, enter
 
 def menu():
     
@@ -114,79 +115,35 @@ def main():
             if tank.x < 0 and 'LEFT' in current_room_data['doors']:
                 next_room = (current_room[0] - 1, current_room[1])
                 if next_room in rooms:
-                    current_room = next_room
-                    move_tank_after_transition(tank, 'LEFT')
-                    wall_list, enemy_list = enter_room(current_room, rooms, floor_index)
-                    bullet_list = []
-                    bullet_list_mob = []
-                    bounty_list = []
+                    current_room, tank, wall_list, enemy_list, bullet_list, bullet_list_mob, bounty_list = enter(
+                        next_room, current_room, tank, wall_list, enemy_list, rooms, floor_index, bullet_list, bullet_list_mob, bounty_list, 'LEFT')
                 elif current_room_data['exit']:
-                    floor_index += 1
-                    rooms, current_room = generate_floor(floor_index)
-                    tank.x = 350
-                    tank.y = 800
-                    tank.rect.topleft = (tank.x, tank.y)
-                    bullet_list = []
-                    bullet_list_mob = []
-                    bounty_list = []
-                    wall_list, enemy_list = enter_room(current_room, rooms, floor_index)
-            elif tank.x > SCREEN_WIDTH - 40 and ('RIGHT' in current_room_data['doors'] or current_room_data['exit']):
+                    floor_index, rooms, current_room, tank, bullet_list, bullet_list_mob, bounty_list, wall_list, enemy_list =next_floor(
+                        floor_index, rooms, current_room, tank, bullet_list, bullet_list_mob, bounty_list, wall_list, enemy_list)
+            elif tank.x > SCREEN_WIDTH - 40 and 'RIGHT' in current_room_data['doors']:
                 next_room = (current_room[0] + 1, current_room[1])
                 if next_room in rooms:
-                    current_room = next_room
-                    move_tank_after_transition(tank, 'RIGHT')
-                    wall_list, enemy_list = enter_room(current_room, rooms, floor_index)
-                    bullet_list = []
-                    bullet_list_mob = []
-                    bounty_list = []
+                    current_room, tank, wall_list, enemy_list, bullet_list, bullet_list_mob, bounty_list = enter(
+                        next_room, current_room, tank, wall_list, enemy_list, rooms, floor_index, bullet_list, bullet_list_mob, bounty_list, 'RIGHT')
                 elif current_room_data['exit']:
-                    floor_index += 1
-                    rooms, current_room = generate_floor(floor_index)
-                    tank.x = 350
-                    tank.y = 800
-                    tank.rect.topleft = (tank.x, tank.y)
-                    bullet_list = []
-                    bullet_list_mob = []
-                    bounty_list = []
-                    wall_list, enemy_list = enter_room(current_room, rooms, floor_index)
+                    floor_index, rooms, current_room, tank, bullet_list, bullet_list_mob, bounty_list, wall_list, enemy_list =next_floor(
+                        floor_index, rooms, current_room, tank, bullet_list, bullet_list_mob, bounty_list, wall_list, enemy_list)
             elif tank.y < 0 and 'UP' in current_room_data['doors']:
                 next_room = (current_room[0], current_room[1] - 1)
                 if next_room in rooms:
-                    current_room = next_room
-                    move_tank_after_transition(tank, 'UP')
-                    wall_list, enemy_list = enter_room(current_room, rooms, floor_index)
-                    bullet_list = []
-                    bullet_list_mob = []
-                    bounty_list = []
+                    current_room, tank, wall_list, enemy_list, bullet_list, bullet_list_mob, bounty_list =enter(
+                        next_room, current_room, tank, wall_list, enemy_list, rooms, floor_index, bullet_list, bullet_list_mob, bounty_list, 'UP')
                 elif current_room_data['exit']:
-                    floor_index += 1
-                    rooms, current_room = generate_floor(floor_index)
-                    tank.x = 350
-                    tank.y = 800
-                    tank.rect.topleft = (tank.x, tank.y)
-                    bullet_list = []
-                    bullet_list_mob = []
-                    bounty_list = []
-                    wall_list, enemy_list = enter_room(current_room, rooms, floor_index)
+                    floor_index, rooms, current_room, tank, bullet_list, bullet_list_mob, bounty_list, wall_list, enemy_list =next_floor(
+                        floor_index, rooms, current_room, tank, bullet_list, bullet_list_mob, bounty_list, wall_list, enemy_list)
             elif tank.y > SCREEN_HEIGHT - 40 and 'DOWN' in current_room_data['doors']:
                 next_room = (current_room[0], current_room[1] + 1)
                 if next_room in rooms:
-                    current_room = next_room
-                    move_tank_after_transition(tank, 'DOWN')
-                    wall_list, enemy_list = enter_room(current_room, rooms, floor_index)
-                    bullet_list = []
-                    bullet_list_mob = []
-                    bounty_list = []
+                    current_room, tank, wall_list, enemy_list, bullet_list, bullet_list_mob, bounty_list = enter(
+                        next_room, current_room, tank, wall_list, enemy_list, rooms, floor_index, bullet_list, bullet_list_mob, bounty_list, 'DOWN')
                 elif current_room_data['exit']:
-                    floor_index += 1
-                    rooms, current_room = generate_floor(floor_index)
-                    tank.x = 350
-                    tank.y = 800
-                    tank.rect.topleft = (tank.x, tank.y)
-                    bullet_list = []
-                    bullet_list_mob = []
-                    bounty_list = []
-                    wall_list, enemy_list = enter_room(current_room, rooms, floor_index)
+                    floor_index, rooms, current_room, tank, bullet_list, bullet_list_mob, bounty_list, wall_list, enemy_list =next_floor(
+                        floor_index, rooms, current_room, tank, bullet_list, bullet_list_mob, bounty_list, wall_list, enemy_list)
         
 
         tank.draw(screen)
