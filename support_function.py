@@ -18,13 +18,13 @@ def next_floor(floor_index, rooms, current_room, tank, bullet_list, bullet_list_
     bullet_list = []
     bullet_list_mob = []
     bounty_list = []
-    wall_list, enemy_list = enter_room(current_room, rooms, floor_index)
+    wall_list, enemy_list = enter_room(current_room, rooms, floor_index, tank)
     return floor_index, rooms, current_room, tank, bullet_list, bullet_list_mob, bounty_list, wall_list, enemy_list
 
 def enter(next_room, current_room, tank, wall_list, enemy_list, rooms, floor_index, bullet_list, bullet_list_mob, bounty_list, direction):
     current_room = next_room
     move_tank_after_transition(tank, direction)
-    wall_list, enemy_list = enter_room(current_room, rooms, floor_index)
+    wall_list, enemy_list = enter_room(current_room, rooms, floor_index, tank)
     bullet_list = []
     bullet_list_mob = []
     bounty_list = []

@@ -104,24 +104,40 @@ def build_room_walls(room):
         elif exit_door == 'RIGHT' and (DOOR_START <= i <= DOOR_END) and room["exit"]:
             wall_list.append(Exit(860, i, 1, 'sprites/exit.jpg'))
 
+    
+
     return wall_list
 
 
 def spawn_room_enemies(room):
     if room['exit'] == False:
+        pygame.mixer.music.load('music/1.mp3')
+        pygame.mixer.music.play(-1)
         return [sEnemy(x, y, random.randint(3, 5)) for x, y in room['enemy_positions']]
     else:
         print(room)
+        pygame.mixer.music.load('music/boss.mp3')
+        pygame.mixer.music.play(-1)
         return [BossEnemy(x, y) for x, y in room['enemy_positions']]
         
 
 
-def enter_room(room_coord, rooms, floor_index):
+def enter_room(room_coord, rooms, floor_index, tank):
     room = rooms[room_coord]
     wall_list = build_room_walls(room)
     print(room)
     enemy_list = [] if room['cleared'] else spawn_room_enemies(room)
+    for i in range(0, 20):
+        i, j = random.randint(40, SCREEN_WIDTH - 40), random.randint(40, SCREEN_HEIGHT - 40)
+        if abs(i - tank.x) < 80 and abs(j - tank.y) < 80:
+            continue
+        for ex, ey in room['enemy_positions']:
+            if abs(i - ex) < 80 and abs(j - ey) < 80:
+                continue
+            else:
+                 wall_list.append(Wall(i, j, 10, 'sprites/wall.png'))
     return wall_list, enemy_list
+
 
 
 def move_tank_after_transition(tank, direction):                   
