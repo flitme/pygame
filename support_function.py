@@ -76,3 +76,10 @@ def joystick_shoot_pressed(joystick):
     R2_AXIS_INDEX = 5
     THRESHOLD = 0.5
     return joystick.get_axis(R2_AXIS_INDEX) > THRESHOLD #get_axis читает значение оси 
+
+
+
+# with open('.txt', 'r', encoding='utf-8') as file:
+#     m = file.read()
+# with open('.txt', 'w', encoding='utf-8') as file:
+#     file.write(new_m)

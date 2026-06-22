@@ -85,6 +85,7 @@ def main():
     direction_list = ['UP', 'DOWN', 'LEFT', 'RIGHT']
     font = pygame.font.SysFont('Arial', 32)
     bc = 0
+    enter_dir = False
     while True:
         clock.tick(SPEED)
         
@@ -116,48 +117,82 @@ def main():
             current_room_data['cleared'] = True
             wall_list = build_room_walls(current_room_data)
 
+        # if current_room_data['cleared']:
+        #     if tank.x < 0 and 'LEFT' in current_room_data['doors']:
+        #         next_room = (current_room[0] - 1, current_room[1])
+        #         if next_room in rooms:
+        #             current_room, tank, wall_list, enemy_list, bullet_list, bullet_list_mob, bounty_list = enter(
+        #                 next_room, current_room, tank, wall_list, enemy_list, rooms, 
+        #                 floor_index, bullet_list, bullet_list_mob, bounty_list, 'LEFT')
+        #         elif current_room_data['exit']:
+        #             floor_index, rooms, current_room, tank, bullet_list, bullet_list_mob, bounty_list, wall_list, enemy_list =next_floor(
+        #                 floor_index, rooms, current_room, tank, bullet_list, 
+        #                 bullet_list_mob, bounty_list, wall_list, enemy_list)
+        #     elif tank.x > SCREEN_WIDTH - 40 and 'RIGHT' in current_room_data['doors']:
+        #         next_room = (current_room[0] + 1, current_room[1])
+        #         if next_room in rooms:
+        #             current_room, tank, wall_list, enemy_list, bullet_list, bullet_list_mob, bounty_list = enter(
+        #                 next_room, current_room, tank, wall_list, enemy_list, rooms, 
+        #                 floor_index, bullet_list, bullet_list_mob, bounty_list, 'RIGHT')
+        #         elif current_room_data['exit']:
+        #             floor_index, rooms, current_room, tank, bullet_list, bullet_list_mob, bounty_list, wall_list, enemy_list =next_floor(
+        #                 floor_index, rooms, current_room, tank, bullet_list, 
+        #                 bullet_list_mob, bounty_list, wall_list, enemy_list)
+        #     elif tank.y < 0 and 'UP' in current_room_data['doors']:
+        #         next_room = (current_room[0], current_room[1] - 1)
+        #         if next_room in rooms:
+        #             current_room, tank, wall_list, enemy_list, bullet_list, bullet_list_mob, bounty_list =enter(
+        #                 next_room, current_room, tank, wall_list, enemy_list, rooms, 
+        #                 floor_index, bullet_list, bullet_list_mob, bounty_list, 'UP')
+        #         elif current_room_data['exit']:
+        #             floor_index, rooms, current_room, tank, bullet_list, bullet_list_mob, bounty_list, wall_list, enemy_list =next_floor(
+        #                 floor_index, rooms, current_room, tank, bullet_list, 
+        #                 bullet_list_mob, bounty_list, wall_list, enemy_list)
+        #     elif tank.y > SCREEN_HEIGHT - 40 and 'DOWN' in current_room_data['doors']:
+        #         next_room = (current_room[0], current_room[1] + 1)
+        #         if next_room in rooms:
+        #             current_room, tank, wall_list, enemy_list, bullet_list, bullet_list_mob, bounty_list = enter(
+        #                 next_room, current_room, tank, wall_list, enemy_list, rooms, 
+        #                 floor_index, bullet_list, bullet_list_mob, bounty_list, 'DOWN')
+        #         elif current_room_data['exit']:
+        #             floor_index, rooms, current_room, tank, bullet_list, bullet_list_mob, bounty_list, wall_list, enemy_list =next_floor(
+        #                 floor_index, rooms, current_room, tank, bullet_list, 
+        #                 bullet_list_mob, bounty_list, wall_list, enemy_list)
+
         if current_room_data['cleared']:
+            print('cleared')
+            print(tank.x, tank.y, current_room_data['doors'])
             if tank.x < 0 and 'LEFT' in current_room_data['doors']:
                 next_room = (current_room[0] - 1, current_room[1])
-                if next_room in rooms:
-                    current_room, tank, wall_list, enemy_list, bullet_list, bullet_list_mob, bounty_list = enter(
-                        next_room, current_room, tank, wall_list, enemy_list, rooms, 
-                        floor_index, bullet_list, bullet_list_mob, bounty_list, 'LEFT')
-                elif current_room_data['exit']:
-                    floor_index, rooms, current_room, tank, bullet_list, bullet_list_mob, bounty_list, wall_list, enemy_list =next_floor(
-                        floor_index, rooms, current_room, tank, bullet_list, 
-                        bullet_list_mob, bounty_list, wall_list, enemy_list)
+                dir_door = 'LEFT'
+                enter_dir = True
+                print('left')
             elif tank.x > SCREEN_WIDTH - 40 and 'RIGHT' in current_room_data['doors']:
                 next_room = (current_room[0] + 1, current_room[1])
-                if next_room in rooms:
-                    current_room, tank, wall_list, enemy_list, bullet_list, bullet_list_mob, bounty_list = enter(
-                        next_room, current_room, tank, wall_list, enemy_list, rooms, 
-                        floor_index, bullet_list, bullet_list_mob, bounty_list, 'RIGHT')
-                elif current_room_data['exit']:
-                    floor_index, rooms, current_room, tank, bullet_list, bullet_list_mob, bounty_list, wall_list, enemy_list =next_floor(
-                        floor_index, rooms, current_room, tank, bullet_list, 
-                        bullet_list_mob, bounty_list, wall_list, enemy_list)
+                dir_door = 'RIGHT'
+                enter_dir = True
+                print('right')
             elif tank.y < 0 and 'UP' in current_room_data['doors']:
                 next_room = (current_room[0], current_room[1] - 1)
-                if next_room in rooms:
-                    current_room, tank, wall_list, enemy_list, bullet_list, bullet_list_mob, bounty_list =enter(
-                        next_room, current_room, tank, wall_list, enemy_list, rooms, 
-                        floor_index, bullet_list, bullet_list_mob, bounty_list, 'UP')
-                elif current_room_data['exit']:
-                    floor_index, rooms, current_room, tank, bullet_list, bullet_list_mob, bounty_list, wall_list, enemy_list =next_floor(
-                        floor_index, rooms, current_room, tank, bullet_list, 
-                        bullet_list_mob, bounty_list, wall_list, enemy_list)
+                dir_door = 'UP'
+                enter_dir = True
+                print('up')
             elif tank.y > SCREEN_HEIGHT - 40 and 'DOWN' in current_room_data['doors']:
                 next_room = (current_room[0], current_room[1] + 1)
+                dir_door = 'DOWN'
+                enter_dir = True
+                print('down')
+            if enter_dir:
+                print(enter_dir)
                 if next_room in rooms:
                     current_room, tank, wall_list, enemy_list, bullet_list, bullet_list_mob, bounty_list = enter(
                         next_room, current_room, tank, wall_list, enemy_list, rooms, 
-                        floor_index, bullet_list, bullet_list_mob, bounty_list, 'DOWN')
+                        floor_index, bullet_list, bullet_list_mob, bounty_list, dir_door)
                 elif current_room_data['exit']:
                     floor_index, rooms, current_room, tank, bullet_list, bullet_list_mob, bounty_list, wall_list, enemy_list =next_floor(
                         floor_index, rooms, current_room, tank, bullet_list, 
                         bullet_list_mob, bounty_list, wall_list, enemy_list)
-        
+                enter_dir = False
 
         tank.draw(screen)
 
