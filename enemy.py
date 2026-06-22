@@ -5,7 +5,7 @@ from tank import Tank
 
 class sEnemy(Tank):
     image = 'sprites/enemy.png'
-    def __init__(self, x, y):
+    def __init__(self, x, y, HP):
         self.x = x
         self.y = y
         self.speed = 5
@@ -17,7 +17,7 @@ class sEnemy(Tank):
         self.start_time_bullet = 1
         self.angle = 0
         self.rect = self.image.get_rect()
-        self.HP = 1
+        self.HP = HP
 
 class BossEnemy(Tank):
     image = 'sprites/enemy.png'
@@ -33,4 +33,4 @@ class BossEnemy(Tank):
         self.start_time_bullet = 1
         self.angle = 0
         self.rect = self.image.get_rect()
-        self.HP = 1
+        self.HP = 15

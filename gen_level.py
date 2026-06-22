@@ -19,7 +19,7 @@ def create_room():
 def generate_room_enemy_positions(floor_index, exit_room):
     if not exit_room:
         enemy_positions = []
-        enemy_count = random.randint(1, min(3, 1 + floor_index)) 
+        enemy_count = random.randint(4, min(4, 3 + floor_index)) 
 
         while len(enemy_positions) < enemy_count:
             x = random.randint(80, 780)  
@@ -113,7 +113,7 @@ def build_room_walls(room):
 
 def spawn_room_enemies(room):
     if room['exit'] == False:
-        return [sEnemy(x, y) for x, y in room['enemy_positions']]
+        return [sEnemy(x, y, random.randint(3, 5)) for x, y in room['enemy_positions']]
     else:
         print(room)
         return [BossEnemy(x, y) for x, y in room['enemy_positions']]

@@ -8,7 +8,7 @@ from bounty import BountyEnemy, BountyBoss
 from gen_level import generate_floor, build_room_walls, spawn_room_enemies, enter_room, move_tank_after_transition
 import time
 import random
-from support_function import next_floor, enter
+from support_function import next_floor, enter, init_joystick, get_joystick_direction, joystick_shoot_pressed
 
 def menu():
     
@@ -71,7 +71,8 @@ def menu_end():
 def main():
     """Основная функция игры."""
     # Инициализация PyGame:
-    #pygame.init()
+    pygame.init()
+    joystick = init_joystick()  # подключаем геймпад, если он есть
     start_time = time.monotonic()
     tank = Tank()
     bullet_list = []
@@ -92,8 +93,11 @@ def main():
                 pygame.quit()
         # Получаем состояние всех клавиш
         keys = pygame.key.get_pressed()
+        controller_direction = get_joystick_direction(joystick)  # читаем направление с геймпада
         # Определяем направление движения на основе зажатых клавиш
-        if keys[pygame.K_UP]:
+        if controller_direction:
+            tank.move(controller_direction, wall_list, enemy_list)  # двигаем танк по направлению стика или крестовины
+        elif keys[pygame.K_UP]:
             tank.move('UP', wall_list, enemy_list)
         elif keys[pygame.K_DOWN]:
             tank.move('DOWN', wall_list, enemy_list)
@@ -101,7 +105,8 @@ def main():
             tank.move('LEFT', wall_list, enemy_list)
         elif keys[pygame.K_RIGHT]:
             tank.move('RIGHT', wall_list, enemy_list)
-        if keys[pygame.K_SPACE]:
+
+        if keys[pygame.K_SPACE] or joystick_shoot_pressed(joystick):  # стрельба с клавиатуры или геймпада:
             if time.monotonic() - start_time >= 1:
                 start_time = time.monotonic()
                 bullet_list.append(Bullet(tank.x + 15, tank.y + 15, tank.old_direction))
@@ -116,40 +121,49 @@ def main():
                 next_room = (current_room[0] - 1, current_room[1])
                 if next_room in rooms:
                     current_room, tank, wall_list, enemy_list, bullet_list, bullet_list_mob, bounty_list = enter(
-                        next_room, current_room, tank, wall_list, enemy_list, rooms, floor_index, bullet_list, bullet_list_mob, bounty_list, 'LEFT')
+                        next_room, current_room, tank, wall_list, enemy_list, rooms, 
+                        floor_index, bullet_list, bullet_list_mob, bounty_list, 'LEFT')
                 elif current_room_data['exit']:
                     floor_index, rooms, current_room, tank, bullet_list, bullet_list_mob, bounty_list, wall_list, enemy_list =next_floor(
-                        floor_index, rooms, current_room, tank, bullet_list, bullet_list_mob, bounty_list, wall_list, enemy_list)
+                        floor_index, rooms, current_room, tank, bullet_list, 
+                        bullet_list_mob, bounty_list, wall_list, enemy_list)
             elif tank.x > SCREEN_WIDTH - 40 and 'RIGHT' in current_room_data['doors']:
                 next_room = (current_room[0] + 1, current_room[1])
                 if next_room in rooms:
                     current_room, tank, wall_list, enemy_list, bullet_list, bullet_list_mob, bounty_list = enter(
-                        next_room, current_room, tank, wall_list, enemy_list, rooms, floor_index, bullet_list, bullet_list_mob, bounty_list, 'RIGHT')
+                        next_room, current_room, tank, wall_list, enemy_list, rooms, 
+                        floor_index, bullet_list, bullet_list_mob, bounty_list, 'RIGHT')
                 elif current_room_data['exit']:
                     floor_index, rooms, current_room, tank, bullet_list, bullet_list_mob, bounty_list, wall_list, enemy_list =next_floor(
-                        floor_index, rooms, current_room, tank, bullet_list, bullet_list_mob, bounty_list, wall_list, enemy_list)
+                        floor_index, rooms, current_room, tank, bullet_list, 
+                        bullet_list_mob, bounty_list, wall_list, enemy_list)
             elif tank.y < 0 and 'UP' in current_room_data['doors']:
                 next_room = (current_room[0], current_room[1] - 1)
                 if next_room in rooms:
                     current_room, tank, wall_list, enemy_list, bullet_list, bullet_list_mob, bounty_list =enter(
-                        next_room, current_room, tank, wall_list, enemy_list, rooms, floor_index, bullet_list, bullet_list_mob, bounty_list, 'UP')
+                        next_room, current_room, tank, wall_list, enemy_list, rooms, 
+                        floor_index, bullet_list, bullet_list_mob, bounty_list, 'UP')
                 elif current_room_data['exit']:
                     floor_index, rooms, current_room, tank, bullet_list, bullet_list_mob, bounty_list, wall_list, enemy_list =next_floor(
-                        floor_index, rooms, current_room, tank, bullet_list, bullet_list_mob, bounty_list, wall_list, enemy_list)
+                        floor_index, rooms, current_room, tank, bullet_list, 
+                        bullet_list_mob, bounty_list, wall_list, enemy_list)
             elif tank.y > SCREEN_HEIGHT - 40 and 'DOWN' in current_room_data['doors']:
                 next_room = (current_room[0], current_room[1] + 1)
                 if next_room in rooms:
                     current_room, tank, wall_list, enemy_list, bullet_list, bullet_list_mob, bounty_list = enter(
-                        next_room, current_room, tank, wall_list, enemy_list, rooms, floor_index, bullet_list, bullet_list_mob, bounty_list, 'DOWN')
+                        next_room, current_room, tank, wall_list, enemy_list, rooms, 
+                        floor_index, bullet_list, bullet_list_mob, bounty_list, 'DOWN')
                 elif current_room_data['exit']:
                     floor_index, rooms, current_room, tank, bullet_list, bullet_list_mob, bounty_list, wall_list, enemy_list =next_floor(
-                        floor_index, rooms, current_room, tank, bullet_list, bullet_list_mob, bounty_list, wall_list, enemy_list)
+                        floor_index, rooms, current_room, tank, bullet_list, 
+                        bullet_list_mob, bounty_list, wall_list, enemy_list)
         
 
         tank.draw(screen)
 
         # блок отрисовки и движения врагов, а также их стрельбы и спавна новых врагов
         for enemy in enemy_list:
+            print(enemy.HP)
             if time.monotonic() - enemy.start_time_direction >= 4:
                 enemy.start_time_direction = time.monotonic()
                 el = enemy_list.copy() + [tank]
@@ -167,7 +181,7 @@ def main():
             enemy.draw(screen)
             damag = pygame.sprite.spritecollide(enemy, bullet_list, False)
             for bullet in damag:
-                enemy.HP -= 1
+                enemy.HP -= bullet.damage
                 bullet_list.remove(bullet)
                 if enemy.HP <= 0:
                     if isinstance(enemy, BossEnemy):
@@ -186,7 +200,7 @@ def main():
         # блок проверки столкновений пуль врагов с танком и всех пуль со стенами     
         damag = pygame.sprite.spritecollide(tank, bullet_list_mob, False)
         for bullet in damag:
-            tank.HP -= 1
+            tank.HP -= bullet.damage
             bullet_list_mob.remove(bullet)
             if tank.HP <= 0:
                 return menu_end()
@@ -195,7 +209,7 @@ def main():
             bl = bullet_list + bullet_list_mob
             damag = pygame.sprite.spritecollide(wall, bl, False)
             for bullet in damag:
-                wall.HP -= 1
+                wall.HP -= bullet.damage
                 if bullet in bullet_list:
                     bullet_list.remove(bullet)
                 else:

@@ -7,7 +7,7 @@ class Bullet:
         self.y = y
         self.speed = 20
         self.derection = derection
-        self.damage = 1
+        self.damage = 2
         self.rect = (self.x, self.y, 10, 10)
     def draw(self, screen):
         self.rect = (self.x, self.y, 10, 10)
