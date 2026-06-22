@@ -163,7 +163,6 @@ def main():
 
         # блок отрисовки и движения врагов, а также их стрельбы и спавна новых врагов
         for enemy in enemy_list:
-            print(enemy.HP)
             if time.monotonic() - enemy.start_time_direction >= 4:
                 enemy.start_time_direction = time.monotonic()
                 el = enemy_list.copy() + [tank]
@@ -174,8 +173,11 @@ def main():
                 el.remove(enemy)
                 enemy.move(enemy.old_direction, wall_list, el)
             if time.monotonic() - enemy.start_time_bullet >= 5:
-                 enemy.start_time_bullet = time.monotonic()
-                 bullet_list_mob.append(Bullet(enemy.x + 15, enemy.y + 15, enemy.old_direction))
+                enemy.start_time_bullet = time.monotonic()
+                if type(enemy) == sEnemy:
+                    bullet_list_mob.append(Bullet(enemy.x + 15, enemy.y + 15, enemy.old_direction))
+                else: 
+                    bullet_list_mob.append(Bullet(enemy.x + 40, enemy.y + 40, enemy.old_direction))
             if enemy.x > SCREEN_WIDTH or enemy.x < 0 or enemy.y > SCREEN_HEIGHT or enemy.y < 0:
                 enemy_list.remove(enemy)
             enemy.draw(screen)
